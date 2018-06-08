@@ -33,7 +33,7 @@ COLUMNS = ['className','handicapped-infants','water-project-cost-sharing','adopt
 'superfund-right-to-sue','crime','duty-free-exports','export-administration-act-south-africa']
 
 #read data into CSV file and convert ? to NaN
-df = pd.read_csv('/Users/razieh/Documents/DeepLearningNLP/MyProjects/house-votes-84.data.txt'
+df = pd.read_csv('house-votes-84.data.txt'
                        , names=COLUMNS
                        , skipinitialspace=True
                        , na_values="?")
