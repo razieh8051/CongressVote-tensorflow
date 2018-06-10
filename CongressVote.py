@@ -58,7 +58,6 @@ inputs=inputs.values
 learning_rate = 0.5
 epochs = 50
 batch_size = 50 #small dataset
-display_step = 1
 
 n_features = 15
 n_calsses=2
