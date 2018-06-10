@@ -42,15 +42,15 @@ for i in range(0,len(COLUMNS)):
     df.replace(cleanup_nums, inplace=True)
 
 #Make 2 one-hot vectors for labels columns
-lables=np.zeros((rows_number, 2))
+labels=np.zeros((rows_number, 2))
 label=df['className']
 for i in range(0,len(label)):
     if(label[i]==0):
-        lables[i,0]=0
-        lables[i,1]=1
+        labels[i,0]=0
+        labels[i,1]=1
     else:
-        lables[i,0]=1
-        lables[i,1]=0
+        labels[i,0]=1
+        labels[i,1]=0
 inputs=df[COLUMNS[2:]]
 inputs=inputs.values
 
@@ -102,27 +102,30 @@ with tf.Session() as sess:
     sess.run(init)    
     #Training cycle
     # for epoch in range(epochs):
-    #     optimizer.run(feed_dict={x: inputs, y: lables})
+    #     optimizer.run(feed_dict={x: inputs, y: labels})
     #     if ((x+1) % 100 == 0):
     #         print("Training epoch " + str(x+1))
-    #         print("Accuracy: " + str(optimizer.run(feed_dict={x: inputs, y: lables})))
-
+    #         print("Accuracy: " + str(optimizer.run(feed_dict={x: inputs, y: labels})))
+    # Loop epochs
     for epoch in range(epochs):
         avg_cost = 0.
        
         total_batch = int(len(inputs)/batch_size)
         X_batches = np.array_split(inputs, total_batch)
-        Y_batches = np.array_split(lables, total_batch)
-        # Loop over all batches
+        Y_batches = np.array_split(labels, total_batch)
+        print("Accuracy: " + str(accuracy.eval(feed_dict={x: inputs,
+                                                          y: labels})))
+        # Loop batches
         for i in range(total_batch):
             batch_x, batch_y = X_batches[i], Y_batches[i]
-            # Run optimization op (backprop) and cost op (to get loss value)
+            # Run optimization and loss 
             _, cost = sess.run([optimizer, loss_function], feed_dict={x: batch_x,
                                                           y: batch_y})
+
+
             # Compute average loss
             avg_cost += cost / total_batch
-        # Display logs per epoch step
-        if epoch % display_step == 0:
-            print("Epoch:", epoch, "cost=", avg_cost)
-            print("Accuracy: " + str(accuracy.eval(feed_dict={x: batch_x,
-                                                          y: batch_y})))
+            avg_cost += cost / total_batch
+
+        print("Epoch:", epoch, "cost=", avg_cost)
+
