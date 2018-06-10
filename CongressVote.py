@@ -2,8 +2,6 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import os.path
-from sklearn.datasets import make_classification
-from sklearn.model_selection import train_test_split
 
 
 def create_model(inputs, weights, biases):
