@@ -88,8 +88,8 @@ y = tf.placeholder(tf.float32, [None, n_calsses])
 prediction=create_model(x,weights,biases)
 
 loss_function = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=y))
-
 optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss_function)
+
 correct_prediction = tf.equal(tf.argmax(prediction,1), tf.argmax(y,1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
  
