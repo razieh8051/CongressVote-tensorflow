@@ -100,15 +100,9 @@ costs = []
 with tf.Session() as sess:
     sess.run(init)    
     #Training cycle
-    # for epoch in range(epochs):
-    #     optimizer.run(feed_dict={x: inputs, y: labels})
-    #     if ((x+1) % 100 == 0):
-    #         print("Training epoch " + str(x+1))
-    #         print("Accuracy: " + str(optimizer.run(feed_dict={x: inputs, y: labels})))
     # Loop epochs
     for epoch in range(epochs):
-        avg_cost = 0.
-       
+        avg_cost = 0       
         total_batch = int(len(inputs)/batch_size)
         X_batches = np.array_split(inputs, total_batch)
         Y_batches = np.array_split(labels, total_batch)
