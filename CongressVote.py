@@ -92,7 +92,8 @@ prediction=create_model(x,weights,biases)
 loss_function = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=y))
 
 optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss_function)
-
+correct_prediction = tf.equal(tf.argmax(prediction,1), tf.argmax(y,1))
+accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
  
 sess = tf.Session()
 init = tf.global_variables_initializer()
@@ -118,11 +119,12 @@ with tf.Session() as sess:
         for i in range(total_batch):
             batch_x, batch_y = X_batches[i], Y_batches[i]
             # Run optimization op (backprop) and cost op (to get loss value)
-            _, c = sess.run([optimizer, loss_function], feed_dict={x: batch_x,
+            _, cost = sess.run([optimizer, loss_function], feed_dict={x: batch_x,
                                                           y: batch_y})
             # Compute average loss
-            avg_cost += c / total_batch
+            avg_cost += cost / total_batch
         # Display logs per epoch step
         if epoch % display_step == 0:
-            print("Epoch:", '%04d' % (epoch+1), "cost=", "{:.9f}".format(avg_cost))
-    print("Optimization Finished!")
+            print("Epoch:", epoch, "cost=", avg_cost)
+            print("Accuracy: " + str(accuracy.eval(feed_dict={x: batch_x,
+                                                          y: batch_y})))
