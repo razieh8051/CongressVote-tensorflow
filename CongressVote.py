@@ -2,19 +2,18 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import os.path
-
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
 
 
 def create_model(inputs, weights, biases):
-
-
     #Create 2-layered NN
     input_layer= tf.matmul(inputs,weights['input'])
-    # Hidden layer with RELU activation
+    # Hidden layer 1 (relu activation)
     hidden_layer1= tf.nn.relu(input_layer + biases['input'])
-    # Hidden layer with RELU activation
+    #  Hidden layer 2 (relu activation)
     hidden_layer2= tf.nn.relu(tf.matmul(hidden_layer1,weights['hidden1'])+biases['hidden1'])
-    # Output layer with linear activation
+    # Output layer (linear activation)
     output_layer= tf.matmul(hidden_layer2, weights['hidden2']) + biases['hidden2']
 
     return output_layer
@@ -30,13 +29,22 @@ df = pd.read_csv(os.path.join(os.path.dirname(__file__), "./house-votes-84.data.
                        , names=COLUMNS
                        , skipinitialspace=True
                        , na_values="?")
+print(df)
+df.replace(["NaN"], np.nan, inplace = True)
+df = df.dropna()
+df = df.reset_index(drop=True)
+  
+print (df.shape)
+rows_number=df.shape[0]
+print(df)
+
 #Label column republican/democrat to 1 and 0
 for i in range(0,len(COLUMNS)):
     cleanup_nums = {COLUMNS[i]: {"y":1, "n":0, "republican":1,"democrat":0}}
     df.replace(cleanup_nums, inplace=True)
 
 #Make 2 one-hot vectors for labels columns
-lables=np.zeros((435, 2))
+lables=np.zeros((rows_number, 2))
 label=df['className']
 for i in range(0,len(label)):
     if(label[i]==0):
@@ -50,8 +58,8 @@ inputs=inputs.values
 
 #HyperParameters Training
 learning_rate = 0.5
-epochs = 100
-batch_size = 100
+epochs = 50
+batch_size = 50 #small dataset
 display_step = 1
 
 n_features = 15
@@ -90,13 +98,31 @@ sess = tf.Session()
 init = tf.global_variables_initializer()
 sess.run(init)
 costs = []
-batch_size = 1
 
 with tf.Session() as sess:
     sess.run(init)    
     #Training cycle
+    # for epoch in range(epochs):
+    #     optimizer.run(feed_dict={x: inputs, y: lables})
+    #     if ((x+1) % 100 == 0):
+    #         print("Training epoch " + str(x+1))
+    #         print("Accuracy: " + str(optimizer.run(feed_dict={x: inputs, y: lables})))
+
     for epoch in range(epochs):
-        optimizer.run(feed_dict={x: inputs, y: lables})
-        if ((x+1) % 100 == 0):
-            print("Training epoch " + str(x+1))
-            print("Accuracy: " + str(optimizer.run(feed_dict={x: inputs, y: lables})))
+        avg_cost = 0.
+       
+        total_batch = int(len(inputs)/batch_size)
+        X_batches = np.array_split(inputs, total_batch)
+        Y_batches = np.array_split(lables, total_batch)
+        # Loop over all batches
+        for i in range(total_batch):
+            batch_x, batch_y = X_batches[i], Y_batches[i]
+            # Run optimization op (backprop) and cost op (to get loss value)
+            _, c = sess.run([optimizer, loss_function], feed_dict={x: batch_x,
+                                                          y: batch_y})
+            # Compute average loss
+            avg_cost += c / total_batch
+        # Display logs per epoch step
+        if epoch % display_step == 0:
+            print("Epoch:", '%04d' % (epoch+1), "cost=", "{:.9f}".format(avg_cost))
+    print("Optimization Finished!")
