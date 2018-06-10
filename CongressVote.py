@@ -113,6 +113,7 @@ with tf.Session() as sess:
         total_batch = int(len(inputs)/batch_size)
         X_batches = np.array_split(inputs, total_batch)
         Y_batches = np.array_split(labels, total_batch)
+        #accuracy
         print("Accuracy: " + str(accuracy.eval(feed_dict={x: inputs,
                                                           y: labels})))
         # Loop batches
@@ -123,9 +124,8 @@ with tf.Session() as sess:
                                                           y: batch_y})
 
 
-            # Compute average loss
-            avg_cost += cost / total_batch
+            # average cost
             avg_cost += cost / total_batch
 
-        print("Epoch:", epoch, "cost=", avg_cost)
+        print("Epoch:", epoch+1, "cost=", avg_cost)
 
