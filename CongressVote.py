@@ -27,14 +27,15 @@ df = pd.read_csv(os.path.join(os.path.dirname(__file__), "./house-votes-84.data.
                        , names=COLUMNS
                        , skipinitialspace=True
                        , na_values="?")
-print(df)
+
+#Rows with NaN values are removed from data
 df.replace(["NaN"], np.nan, inplace = True)
 df = df.dropna()
 df = df.reset_index(drop=True)
   
-print (df.shape)
+#New row numbers after removing NaN values
 rows_number=df.shape[0]
-print(df)
+
 
 #Label column republican/democrat to 1 and 0
 for i in range(0,len(COLUMNS)):
@@ -115,10 +116,7 @@ with tf.Session() as sess:
             # Run optimization and loss 
             _, cost = sess.run([optimizer, loss_function], feed_dict={x: batch_x,
                                                           y: batch_y})
-
-
             # average cost
             avg_cost += cost / total_batch
-
         print("Epoch:", epoch+1, "cost=", avg_cost)
 
