@@ -12,8 +12,8 @@ def create_model(inputs, weights, biases):
     hidden_layer1= tf.nn.relu(input_layer + biases['input'])
     #  Hidden layer 2 (relu activation)
     hidden_layer2= tf.nn.relu(tf.matmul(hidden_layer1,weights['hidden1'])+biases['hidden1'])
-    # Output layer (sigmoid activation)
-    output_layer= tf.nn.sigmoid(tf.matmul(hidden_layer2, weights['hidden2']) + biases['hidden2'])
+    # Output layer (linear activation)
+    output_layer= tf.matmul(hidden_layer2, weights['hidden2']) + biases['hidden2']
 
     return output_layer
 
