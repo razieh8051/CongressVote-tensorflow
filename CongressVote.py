@@ -100,7 +100,6 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 sess = tf.Session()
 init = tf.global_variables_initializer()
 sess.run(init)
-costs = []
 
 with tf.Session() as sess:
     sess.run(init)    
