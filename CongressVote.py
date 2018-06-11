@@ -43,7 +43,7 @@ for i in range(0,len(COLUMNS)):
     cleanup_nums = {COLUMNS[i]: {"y":1, "n":0, "republican":1,"democrat":0}}
     df.replace(cleanup_nums, inplace=True)
 
-#Make 2 one-hot vectors for labels columns
+#Make 2 one-hot vectors for the labels column
 labels=np.zeros((rows_number, 2))
 label=df['className']
 for i in range(0,len(label)):
