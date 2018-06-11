@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import os.path
+from sklearn.model_selection import train_test_split
 
 
 def create_model(inputs, weights, biases):
@@ -52,8 +53,11 @@ for i in range(0,len(label)):
     else:
         labels[i,0]=1
         labels[i,1]=0
+
 inputs=df[COLUMNS[2:]]
 inputs=inputs.values
+
+x_train, x_test, y_train, y_test = train_test_split(inputs, labels)
 
 #HyperParameters Training
 learning_rate = 0.5
@@ -104,12 +108,9 @@ with tf.Session() as sess:
     # Loop epochs
     for epoch in range(epochs):
         avg_cost = 0       
-        total_batch = int(len(inputs)/batch_size)
-        X_batches = np.array_split(inputs, total_batch)
-        Y_batches = np.array_split(labels, total_batch)
-        #accuracy
-        print("Accuracy: " + str(accuracy.eval(feed_dict={x: inputs,
-                                                          y: labels})))
+        total_batch = int(len(x_train)/batch_size)
+        X_batches = np.array_split(x_train, total_batch)
+        Y_batches = np.array_split(y_train, total_batch)
         # Loop batches
         for i in range(total_batch):
             batch_x, batch_y = X_batches[i], Y_batches[i]
@@ -119,4 +120,8 @@ with tf.Session() as sess:
             # average cost
             avg_cost += cost / total_batch
         print("Epoch:", epoch+1, "cost=", avg_cost)
+    
+    #accuracy
+    print("Accuracy: " + str(accuracy.eval(feed_dict={x: x_test,
+                                                          y: y_test})))
 
